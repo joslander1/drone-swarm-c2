@@ -2,18 +2,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { MapPin, Crosshair, Navigation } from 'lucide-react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const TacticalMap = () => {
   const [selectedDrone, setSelectedDrone] = useState<string | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-  const [tokenSet, setTokenSet] = useState<boolean>(false);
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const droneMarkers = useRef<{ [key: string]: mapboxgl.Marker }>({});
+  const map = useRef<L.Map | null>(null);
+  const droneMarkers = useRef<{ [key: string]: L.Marker }>({});
 
   const drones = [
     { id: 'UAV-001', lat: 40.7128, lng: -74.0060, status: 'active', group: 1, mission: 'patrol' },
@@ -38,83 +35,92 @@ const TacticalMap = () => {
     }
   };
 
-  const initializeMap = () => {
-    if (!mapContainer.current || !tokenSet) return;
+  const createDroneIcon = (status: string) => {
+    return L.divIcon({
+      html: `<div style="background-color: ${getStatusColor(status)}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.3);"></div>`,
+      className: 'drone-marker',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
+    });
+  };
 
-    mapboxgl.accessToken = mapboxToken;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/dark-v11',
-      center: [-74.0060, 40.7128], // NYC coordinates
+  const createWaypointIcon = () => {
+    return L.divIcon({
+      html: `<div style="background-color: #fbbf24; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #f59e0b; box-shadow: 0 0 6px rgba(0,0,0,0.3);"></div>`,
+      className: 'waypoint-marker',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
+    });
+  };
+
+  const initializeMap = () => {
+    if (!mapContainer.current) return;
+
+    // Initialize Leaflet map
+    map.current = L.map(mapContainer.current, {
+      center: [40.7128, -74.0060], // NYC coordinates
       zoom: 11,
+      zoomControl: true,
+      attributionControl: false
     });
 
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map.current);
 
     // Add waypoints
     waypoints.forEach((wp) => {
-      const el = document.createElement('div');
-      el.className = 'w-4 h-4 border-2 border-yellow-400 rounded-full bg-yellow-400/20 cursor-pointer';
-      el.innerHTML = '<div class="w-2 h-2 bg-yellow-400 rounded-full m-0.5"></div>';
-      
-      new mapboxgl.Marker(el)
-        .setLngLat([wp.lng, wp.lat])
-        .setPopup(new mapboxgl.Popup().setHTML(`<div class="text-sm font-semibold">${wp.id}</div><div class="text-xs">${wp.type}</div>`))
-        .addTo(map.current!);
+      const marker = L.marker([wp.lat, wp.lng], {
+        icon: createWaypointIcon()
+      }).addTo(map.current!);
+
+      marker.bindPopup(`
+        <div style="color: #000; font-size: 14px;">
+          <div style="font-weight: bold; color: #f59e0b;">${wp.id}</div>
+          <div style="font-size: 12px;">${wp.type}</div>
+        </div>
+      `);
     });
 
     // Add drones
     drones.forEach((drone) => {
-      const el = document.createElement('div');
-      el.className = 'w-3 h-3 rounded-full animate-pulse cursor-pointer relative';
-      el.style.backgroundColor = getStatusColor(drone.status);
-      el.innerHTML = '<div class="absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full opacity-60"></div>';
-      
-      el.addEventListener('click', () => {
+      const marker = L.marker([drone.lat, drone.lng], {
+        icon: createDroneIcon(drone.status)
+      }).addTo(map.current!);
+
+      marker.bindPopup(`
+        <div style="color: #000; font-size: 14px;">
+          <div style="font-weight: bold; color: #10b981;">${drone.id}</div>
+          <div style="font-size: 12px;">Group ${drone.group}</div>
+          <div style="font-size: 12px;">${drone.mission}</div>
+          <div style="font-size: 12px; text-transform: capitalize;">${drone.status}</div>
+        </div>
+      `);
+
+      marker.on('click', () => {
         setSelectedDrone(drone.id);
       });
-
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([drone.lng, drone.lat])
-        .setPopup(new mapboxgl.Popup().setHTML(`
-          <div class="text-sm font-semibold text-green-400">${drone.id}</div>
-          <div class="text-xs">Group ${drone.group}</div>
-          <div class="text-xs">${drone.mission}</div>
-          <div class="text-xs capitalize">${drone.status}</div>
-        `))
-        .addTo(map.current!);
 
       droneMarkers.current[drone.id] = marker;
     });
   };
 
   useEffect(() => {
-    if (tokenSet && mapboxToken) {
-      initializeMap();
-    }
+    initializeMap();
 
     return () => {
-      map.current?.remove();
+      if (map.current) {
+        map.current.remove();
+      }
     };
-  }, [tokenSet, mapboxToken]);
-
-  const handleTokenSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (mapboxToken.trim()) {
-      setTokenSet(true);
-    }
-  };
+  }, []);
 
   const centerOnDrone = () => {
     if (selectedDrone && map.current) {
       const drone = drones.find(d => d.id === selectedDrone);
       if (drone) {
-        map.current.flyTo({
-          center: [drone.lng, drone.lat],
-          zoom: 14,
-          duration: 1500
-        });
+        map.current.setView([drone.lat, drone.lng], 14);
       }
     }
   };
@@ -123,45 +129,10 @@ const TacticalMap = () => {
     if (selectedDrone && map.current) {
       const drone = drones.find(d => d.id === selectedDrone);
       if (drone) {
-        map.current.flyTo({
-          center: [drone.lng, drone.lat],
-          zoom: 16,
-          duration: 2000
-        });
+        map.current.setView([drone.lat, drone.lng], 16);
       }
     }
   };
-
-  if (!tokenSet) {
-    return (
-      <Card className="bg-slate-800 border-green-500/30 h-96">
-        <CardHeader>
-          <CardTitle className="text-green-400 flex items-center space-x-2">
-            <MapPin className="w-5 h-5" />
-            <span>Tactical Map</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center h-64 space-y-4">
-          <div className="text-center text-gray-400">
-            <p className="mb-2">Enter your Mapbox public token to view the tactical map</p>
-            <p className="text-xs">Get your token at: https://mapbox.com/</p>
-          </div>
-          <form onSubmit={handleTokenSubmit} className="flex space-x-2 w-full max-w-md">
-            <Input
-              type="text"
-              placeholder="Enter Mapbox token..."
-              value={mapboxToken}
-              onChange={(e) => setMapboxToken(e.target.value)}
-              className="bg-slate-700 border-green-500/30 text-white"
-            />
-            <Button type="submit" className="bg-green-500 hover:bg-green-600">
-              Load Map
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="bg-slate-800 border-green-500/30 h-96">
