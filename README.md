@@ -26,7 +26,7 @@ Drone Fleet Command is a tactical operations interface designed to plan, monitor
 - **Framework**: React 18 + Vite + TypeScript
 - **Styling**: Tailwind CSS + shadcn/ui
 - **Mapping**: Leaflet + OpenStreetMap
-- **Backend**: Lovable Cloud (database, auth, storage, edge functions)
+- **Backend**: Supabase (database, auth, storage, edge functions)
 - **State / Data**: TanStack Query
 - **Routing**: React Router
 
