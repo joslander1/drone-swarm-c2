@@ -58,7 +58,59 @@ src/
 
 ## Backend
 
-This project uses Lovable Cloud for persistence, authentication, file storage, and serverless functions. No external account setup is required.
+This project runs on Lovable Cloud (Postgres database, authentication, file storage, realtime, and serverless edge functions) — no external account setup required. The Supabase JS client is auto-generated at `src/integrations/supabase/client.ts`.
+
+### Database Schema
+
+| Table | Purpose |
+| --- | --- |
+| `drones` | Fleet inventory: callsign, type, group class (Group 1 / Group 2), status, battery, signal, altitude, speed, position |
+| `missions` | Mission name, description, status, assigned drones, start/end times |
+| `waypoints` | Ordered waypoint list per mission (lat/lng, altitude, action) |
+| `swarm_formations` | Saved swarm configurations: name, formation type, member drone IDs, parameters (spacing, altitude, heading), active flag |
+| `telemetry` | Time-series telemetry samples per drone (position, heading, speed, battery, signal) |
+| `alerts` | Drone alerts and emergency events with severity and acknowledgement |
+| `audit_log` | Operator action history with entity references and details |
+
+### Enums
+
+- `drone_status` — `active`, `standby`, `returning`, `maintenance`, `offline`, `emergency`
+- `drone_group` — `group_1`, `group_2`
+- `mission_status` — `planned`, `active`, `paused`, `completed`, `aborted`
+- `alert_severity` — `info`, `warning`, `critical`
+- `formation_type` — `line`, `wedge`, `diamond`, `circle`, `grid`, `custom`
+
+### Realtime
+
+The following tables stream changes over Supabase Realtime so multiple operator stations stay in sync:
+
+- `drones`
+- `telemetry`
+- `alerts`
+
+### Authentication & Access
+
+The current build runs without operator authentication — all tables have permissive RLS policies so the command interface works out of the box. Before deploying to a production environment, add operator login (email + Google) and tighten RLS policies to require an authenticated session, with a roles table (`admin` / `operator` / `viewer`) gating write access.
+
+### Usage Example
+
+```typescript
+import { supabase } from '@/integrations/supabase/client';
+
+// Fetch the fleet
+const { data: drones } = await supabase
+  .from('drones')
+  .select('*')
+  .order('callsign');
+
+// Subscribe to live telemetry
+const channel = supabase
+  .channel('telemetry-stream')
+  .on('postgres_changes',
+    { event: 'INSERT', schema: 'public', table: 'telemetry' },
+    (payload) => console.log('new telemetry:', payload.new))
+  .subscribe();
+```
 
 ## Safety Notice
 
