@@ -1,6 +1,6 @@
 # Drone Fleet Command
 
-A hardware-agnostic front-end for autonomous flight control of Group 1 and Group 2 unmanned aerial systems (UAS), with built-in swarm coordination capabilities.
+A hardware-agnostic autonomous flight control of Group 1 and Group 2 unmanned aerial systems (UAS), with built-in swarm coordination capabilities.
 
 ## Overview
 
