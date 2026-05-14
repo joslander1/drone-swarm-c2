@@ -1,73 +1,69 @@
-# Welcome to your Lovable project
+# Drone Fleet Command
 
-## Project info
+A hardware-agnostic front-end for autonomous flight control of Group 1 and Group 2 unmanned aerial systems (UAS), with built-in swarm coordination capabilities.
 
-**URL**: https://lovable.dev/projects/6f1ba96b-a285-44c2-bf7b-0c4701e5027c
+## Overview
 
-## How can I edit this code?
+Drone Fleet Command is a tactical operations interface designed to plan, monitor, and control autonomous drone missions across mixed fleets. The system is hardware-agnostic — it provides a unified control surface regardless of underlying airframe, autopilot, or communication link — and supports coordinated swarm behavior when missions require it.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- **Tactical Map** — Live interactive map (Leaflet + OpenStreetMap) showing drone positions, waypoints, and mission overlays
+- **Fleet Management** — Real-time status, battery, signal, altitude, and position for every airframe
+- **Mission Planner** — Define waypoints, flight paths, and mission parameters
+- **Swarm Control** — Coordinate multiple drones in formations and collaborative behaviors
+- **Telemetry** — Live telemetry feeds and system diagnostics
+- **Emergency Panel** — Return-to-base, hold, emergency land, and lost-comm protocols with manual override
+- **Hardware Agnostic** — Designed to integrate with any Group 1 or Group 2 UAS regardless of vendor
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6f1ba96b-a285-44c2-bf7b-0c4701e5027c) and start prompting.
+## Drone Group Support
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Group 1**: < 20 lbs, < 1,200 ft AGL, < 100 kts (fixed-wing, rotary-wing, hybrid)
+- **Group 2**: 21–55 lbs, < 3,500 ft AGL, < 250 kts (fixed-wing, rotary-wing, hybrid)
 
-**Use your preferred IDE**
+## Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Framework**: React 18 + Vite + TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Mapping**: Leaflet + OpenStreetMap
+- **Backend**: Lovable Cloud (database, auth, storage, edge functions)
+- **State / Data**: TanStack Query
+- **Routing**: React Router
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Getting Started
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app runs at `http://localhost:8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Project Structure
 
-**Use GitHub Codespaces**
+```text
+src/
+├── components/
+│   ├── TacticalMap.tsx      # Interactive map view
+│   ├── DroneFleet.tsx       # Fleet status & control
+│   ├── MissionPlanner.tsx   # Mission/waypoint planning
+│   ├── SwarmControl.tsx     # Swarm coordination
+│   ├── Telemetry.tsx        # Live telemetry
+│   └── EmergencyPanel.tsx   # Emergency protocols
+├── pages/
+│   └── Index.tsx            # Main command dashboard
+└── integrations/
+    └── supabase/            # Backend client (auto-generated)
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Backend
 
-## What technologies are used for this project?
+This project uses Lovable Cloud for persistence, authentication, file storage, and serverless functions. No external account setup is required.
 
-This project is built with:
+## Safety Notice
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+This software is intended as a command-and-control interface. Always operate UAS in compliance with local airspace regulations (e.g., FAA Part 107 in the United States) and within visual line of sight unless properly authorized for BVLOS operations.
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/6f1ba96b-a285-44c2-bf7b-0c4701e5027c) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Proprietary — all rights reserved.
