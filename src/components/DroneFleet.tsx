@@ -91,14 +91,14 @@ const DroneFleet: React.FC<DroneFleetProps> = ({ expanded = false }) => {
 
   if (!expanded) {
     return (
-      <Card className="bg-slate-800 border-green-500/30 h-96">
-        <CardHeader>
+      <Card className="bg-slate-800 border-green-500/30 h-96 flex flex-col">
+        <CardHeader className="flex-shrink-0">
           <CardTitle className="text-green-400 flex items-center space-x-2">
             <Plane className="w-5 h-5" />
             <span>Fleet Status</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 overflow-y-auto flex-1 min-h-0">
           {drones.map((drone) => (
             <div key={drone.id} className="bg-slate-900 border border-green-500/20 rounded-lg p-3">
               <div className="flex items-center justify-between mb-2">
