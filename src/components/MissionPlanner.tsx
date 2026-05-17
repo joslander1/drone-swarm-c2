@@ -231,6 +231,7 @@ const MissionPlanner = () => {
           Deploy Mission
         </Button>
       </div>
+      </fieldset>
     </div>
   );
 };
