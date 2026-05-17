@@ -1,0 +1,1 @@
+ALTER TABLE public.drones ADD COLUMN IF NOT EXISTS config jsonb NOT NULL DEFAULT '{"rtbBatteryPct":20,"minSignalPct":30,"maxAltitudeFt":2000,"maxSpeedMph":80}'::jsonb;

@@ -87,6 +87,7 @@ export type Database = {
           altitude_ft: number
           battery: number
           callsign: string
+          config: Json
           created_at: string
           current_mission_id: string | null
           group_class: Database["public"]["Enums"]["drone_group"]
@@ -103,6 +104,7 @@ export type Database = {
           altitude_ft?: number
           battery?: number
           callsign: string
+          config?: Json
           created_at?: string
           current_mission_id?: string | null
           group_class: Database["public"]["Enums"]["drone_group"]
@@ -119,6 +121,7 @@ export type Database = {
           altitude_ft?: number
           battery?: number
           callsign?: string
+          config?: Json
           created_at?: string
           current_mission_id?: string | null
           group_class?: Database["public"]["Enums"]["drone_group"]
