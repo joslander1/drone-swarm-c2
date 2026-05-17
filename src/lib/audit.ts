@@ -1,21 +1,12 @@
-import { supabase } from '@/integrations/supabase/client';
-
+// Read-only public demo: audit logging is a no-op.
+// Kept as an exported function so existing call sites don't break.
 export async function logAudit(
-  action: string,
-  entityType: string,
-  entityId: string,
-  details: Record<string, unknown> = {},
+  _action: string,
+  _entityType: string,
+  _entityId: string,
+  _details: Record<string, unknown> = {},
 ) {
-  try {
-    await supabase.from('audit_log').insert({
-      action,
-      entity_type: entityType,
-      entity_id: entityId,
-      details: details as any,
-    });
-  } catch (e) {
-    console.error('audit log failed', e);
-  }
+  return;
 }
 
 export function diffObjects<T extends Record<string, any>>(

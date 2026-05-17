@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { MapPin, Route, Clock, Target } from 'lucide-react';
+import ReadOnlyBanner from './ReadOnlyBanner';
 
 const MissionPlanner = () => {
   const [missionType, setMissionType] = useState('');
@@ -30,6 +31,8 @@ const MissionPlanner = () => {
 
   return (
     <div className="space-y-6">
+      <ReadOnlyBanner />
+      <fieldset disabled className="space-y-6 opacity-80 [&_button]:cursor-not-allowed [&_input]:cursor-not-allowed">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Mission Planning */}
         <Card className="bg-slate-800 border-green-500/30">
@@ -228,6 +231,7 @@ const MissionPlanner = () => {
           Deploy Mission
         </Button>
       </div>
+      </fieldset>
     </div>
   );
 };

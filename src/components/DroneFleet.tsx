@@ -182,6 +182,8 @@ const DroneFleet: React.FC<DroneFleetProps> = ({ expanded = false }) => {
                     variant="outline"
                     className="border-green-500/30 text-green-400 hover:bg-green-500/10"
                     onClick={() => openSetup(drone.id)}
+                    title="View details"
+                    aria-label="View drone details"
                   >
                     <Settings className="w-3 h-3" />
                   </Button>

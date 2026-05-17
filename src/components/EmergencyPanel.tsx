@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, Shield, Home, Pause, StopCircle, Radio } from 'lucide-react';
+import ReadOnlyBanner from './ReadOnlyBanner';
 
 const EmergencyPanel = () => {
   const [emergencyMode, setEmergencyMode] = useState(false);
@@ -59,6 +60,8 @@ const EmergencyPanel = () => {
 
   return (
     <div className="space-y-6">
+      <ReadOnlyBanner />
+      <fieldset disabled className="space-y-6 opacity-90 [&_button]:cursor-not-allowed">
       {/* Emergency Status */}
       <Alert className={`border-2 ${emergencyMode ? 'border-red-500 bg-red-500/10' : 'border-green-500 bg-green-500/10'}`}>
         <AlertTriangle className={`h-4 w-4 ${emergencyMode ? 'text-red-400' : 'text-green-400'}`} />
@@ -195,6 +198,7 @@ const EmergencyPanel = () => {
           )}
         </CardContent>
       </Card>
+      </fieldset>
     </div>
   );
 };
