@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { MapPin, Route, Clock, Target } from 'lucide-react';
 import ReadOnlyBanner from './ReadOnlyBanner';
+import MissionGlossary from './MissionGlossary';
 
 const MissionPlanner = () => {
   const [missionType, setMissionType] = useState('');
