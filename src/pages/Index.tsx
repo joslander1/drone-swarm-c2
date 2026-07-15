@@ -29,7 +29,7 @@ const Index = () => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="bg-green-500/10 px-3 py-1 rounded border border-green-500/30">
-                <span className="text-sm">OPERATIONAL</span>
+                <span className="text-sm">Mission Active</span>
               </div>
               <div className="text-right">
                 <div className="text-sm text-gray-400">Mission Time</div>
