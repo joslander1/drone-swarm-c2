@@ -138,12 +138,12 @@ const MissionPlanner = () => {
         </Card>
       </div>
 
-      {/* Flight Path Planning */}
+      {/* Flight Path Plan */}
       <Card className="bg-slate-800 border-green-500/30">
         <CardHeader>
           <CardTitle className="text-green-400 flex items-center space-x-2">
             <Route className="w-5 h-5" />
-            <span>Flight Path Planning</span>
+            <span>Flight Path Plan</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
