@@ -32,7 +32,10 @@ const MissionPlanner = () => {
 
   return (
     <div className="space-y-6">
-      <ReadOnlyBanner />
+      <div className="flex items-center justify-between gap-4">
+        <ReadOnlyBanner />
+        <MissionGlossary />
+      </div>
       <fieldset disabled className="space-y-6 opacity-80 [&_button]:cursor-not-allowed [&_input]:cursor-not-allowed">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Mission Planning */}
